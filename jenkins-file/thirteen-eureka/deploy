@@ -70,7 +70,7 @@ pipeline{
 						openTasksPublisher(disabled: true),
 						pipelineGraphPublisher(disabled: true),
 						dependenciesFingerprintPublisher(disabled: true)
-					],
+					]
 					//使用内部本地maven库
 					//mavenSettingsFilePath: '/opt/maven/settings.xml')
 				{
