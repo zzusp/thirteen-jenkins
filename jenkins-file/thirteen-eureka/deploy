@@ -139,7 +139,7 @@ pipeline{
 										# 服务器最终部署目录
 										targetpath=\'/usr/local/soft/jenkins/thirteen-eureka\'
 										# 服务器备份目录
-										backuppath=\'/usr/local/soft/jenkins/thirteen-eureka/target/backup\'
+										backuppath=\'/usr/local/soft/jenkins/thirteen-eureka/backup\'
 										# jdk目录
 										javapath=\'/usr/local/soft/jdk-13//bin\'
 										# java编译参数
@@ -168,7 +168,7 @@ pipeline{
 										# execute command
 										sh -c "$javacommand"
 										# wait for service status change to OK
-										sleep 60s
+										sleep 30s
 										tail -n 5000 out.log
 										exit 1
 									''', 
