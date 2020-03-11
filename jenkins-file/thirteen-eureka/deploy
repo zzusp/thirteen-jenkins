@@ -72,7 +72,8 @@ pipeline{
 						dependenciesFingerprintPublisher(disabled: true)
 					]
 					//使用内部本地maven库
-					//mavenSettingsFilePath: '/opt/maven/settings.xml')
+					//mavenSettingsFilePath: '/opt/maven/settings.xml'
+					)
 				{
 					sh 'mvn clean package -pl thirteen-eureka -am -Dmaven.test.skip=true -P prod'
 				}
