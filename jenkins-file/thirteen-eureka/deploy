@@ -125,7 +125,7 @@ pipeline{
 									//去除前缀
 									removePrefix: 'thirteen-eureka/sftp',
 									//需要上传远程服务器的相对目录地址
-									remoteDirectory: '/usr/local/soft/jenkins/thirteen-eureka/sf',
+									remoteDirectory: '/usr/local/soft/jenkins/thirteen-eureka/sftp',
 									//部署超时设定
 									execTimeout: 600000, 
 									cleanRemote: false, 
