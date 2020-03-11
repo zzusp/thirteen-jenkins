@@ -125,7 +125,7 @@ pipeline{
 									//去除前缀
 									removePrefix: 'thirteen-eureka/sftp',
 									//需要上传远程服务器的相对目录地址
-									remoteDirectory: '/usr/local/soft/jenkins/thirteen-eureka/target',
+									remoteDirectory: '/usr/local/soft/jenkins/thirteen-eureka/sf',
 									//部署超时设定
 									execTimeout: 600000, 
 									cleanRemote: false, 
@@ -152,7 +152,7 @@ pipeline{
 										mkdir -p $backuppath
 										# Kill java process by search name
 										$jpscmd | grep "$searchname" | cut -d \' \' -f1 | xargs -r kill -9
-										sleep 10s
+										sleep 5s
 										# clear backup folder
 										find $backuppath -type f -name "$searchname" | xargs -r rm -rf
 										# copy target file to backup folder
