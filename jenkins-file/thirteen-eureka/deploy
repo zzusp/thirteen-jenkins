@@ -116,7 +116,7 @@ pipeline{
 								将得到加密后的字符串复制过来
 								*/
 								//encryptedPassphrase: '{AQAAABAAAAAQ1AnObtd+nnwBxrK2pUfrGYd+USudVj2YprQvfb9Wqh8=}',
-								key: '', 
+								key: 'dTkTnaGsN9KUsYB', 
 								keyPath: ''
 							], 
 							transfers: [
