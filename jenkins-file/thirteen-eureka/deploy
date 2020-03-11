@@ -60,7 +60,7 @@ pipeline{
 				*/
                 withMaven(
 					//jdk版本需要在Jenkins全局设置中预先定义
-					jdk: 'openjdk13',
+					jdk: 'JDK-13',
 					//Maven版本需要在Jenkins全局设置中预先定义
 					maven: 'Maven3.3.9',
 					//不创建artifacts
