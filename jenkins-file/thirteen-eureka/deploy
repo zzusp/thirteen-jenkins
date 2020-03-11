@@ -115,7 +115,7 @@ pipeline{
 								在页面上运行脚本：println(hudson.util.Secret.fromString("<password>").getEncryptedValue())
 								将得到加密后的字符串复制过来
 								*/
-								encryptedPassphrase: '{AQAAABAAAAAQ2Hw37zpBDCGB2VFxjKap5EtSUa5wh90XcJkubJr0sIs=}',
+								encryptedPassphrase: '{AQAAABAAAAAQ1AnObtd+nnwBxrK2pUfrGYd+USudVj2YprQvfb9Wqh8=}',
 								key: '', 
 								keyPath: ''
 							], 
