@@ -170,7 +170,7 @@ pipeline{
 										# wait for service status change to OK
 										sleep 30s
 										tail -n 5000 out.log
-										exit 1
+										exit 0
 									''', 
 									flatten: false, 
 									makeEmptyDirs: false, 
