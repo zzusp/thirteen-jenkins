@@ -135,9 +135,9 @@ pipeline{
 										# 设置需要部署的文件名，可以使用通配符部署多个jar包
 										searchname=\'thirteen-eureka.jar\'
 										# 服务器原始文件目录
-										sourcepath=\'/usr/local/soft/jenkins/thirteen-eureka/target\'
+										sourcepath=\'/usr/local/soft/jenkins/thirteen-eureka/sftp\'
 										# 服务器最终部署目录
-										targetpath=\'/usr/local/soft/jenkins/thirteen-eureka\'
+										targetpath=\'/usr/local/soft/jenkins/thirteen-eureka/target\'
 										# 服务器备份目录
 										backuppath=\'/usr/local/soft/jenkins/thirteen-eureka/backup\'
 										# jdk目录
