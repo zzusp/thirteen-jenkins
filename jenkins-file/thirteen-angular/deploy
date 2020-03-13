@@ -42,7 +42,7 @@ pipeline{
 						node -v
 						npm -v
 				        npm set registry https://registry.npm.taobao.org
-				        echo "npm install"
+				        npm install
 				        npm run build-prod-base
 				    '''
 				}
