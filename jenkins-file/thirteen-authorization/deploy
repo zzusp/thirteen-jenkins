@@ -136,7 +136,7 @@ pipeline{
 									//执行命令
 									execCommand: '''
 										# 设置需要部署的文件名，可以使用通配符部署多个jar包
-										searchname=\'thirteen-authorization.jar\'
+										searchname=\'thirteen-authorization-starter.jar\'
 										# 服务器原始文件目录
 										sourcepath=\'/usr/local/soft/jenkins/thirteen-authorization/sftp\'
 										# 服务器最终部署目录
