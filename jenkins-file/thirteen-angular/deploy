@@ -39,12 +39,12 @@ pipeline{
 				*/
 				nodejs('NodeJS13.11.0') {
 				    sh '''
-				        npm set registry https://registry.npm.taobao.org
-						npm info underscore
-				        npm install
-				        npm run build-prod-base
 						node -v
 						npm -v
+				        npm set registry https://registry.npm.taobao.org
+						npm cache verify
+				        npm install
+				        npm run build-prod-base
 				    '''
 				}
             }
