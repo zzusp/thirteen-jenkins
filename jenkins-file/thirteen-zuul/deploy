@@ -75,7 +75,7 @@ pipeline{
 					//mavenSettingsFilePath: '/opt/maven/settings.xml'
 					)
 				{
-					sh 'mvn clean package -pl thirteen-gateway -am -Dmaven.test.skip=true -P prod'
+					sh 'mvn clean package -pl thirteen-zuul -am -Dmaven.test.skip=true -P prod'
 				}
             }
         }
@@ -92,7 +92,7 @@ pipeline{
 				//sh 'rm -rf sftp/*'
 				//sh 'mv target/*.jar sftp'
 				sh '''
-					cd thirteen-gateway
+					cd thirteen-zuul
 					mkdir -p sftp
 					rm -rf sftp/*
 					mv target/*.jar sftp
@@ -121,11 +121,11 @@ pipeline{
 							transfers: [
 								sshTransfer(
 									//本地需要上传的文件
-									sourceFiles: 'thirteen-gateway/sftp/*.jar',
+									sourceFiles: 'thirteen-zuul/sftp/*.jar',
 									//去除前缀
-									removePrefix: 'thirteen-gateway/sftp',
+									removePrefix: 'thirteen-zuul/sftp',
 									//需要上传远程服务器的相对目录地址
-									remoteDirectory: '/usr/local/soft/jenkins/thirteen-gateway/sftp',
+									remoteDirectory: '/usr/local/soft/jenkins/thirteen-zuul/sftp',
 									//部署超时设定
 									execTimeout: 600000, 
 									cleanRemote: false, 
@@ -133,13 +133,13 @@ pipeline{
 									//执行命令
 									execCommand: '''
 										# 设置需要部署的文件名，可以使用通配符部署多个jar包
-										searchname=\'thirteen-gateway.jar\'
+										searchname=\'thirteen-zuul.jar\'
 										# 服务器原始文件目录
-										sourcepath=\'/usr/local/soft/jenkins/thirteen-gateway/sftp\'
+										sourcepath=\'/usr/local/soft/jenkins/thirteen-zuul/sftp\'
 										# 服务器最终部署目录
-										targetpath=\'/usr/local/soft/jenkins/thirteen-gateway/target\'
+										targetpath=\'/usr/local/soft/jenkins/thirteen-zuul/target\'
 										# 服务器备份目录
-										backuppath=\'/usr/local/soft/jenkins/thirteen-gateway/backup\'
+										backuppath=\'/usr/local/soft/jenkins/thirteen-zuul/backup\'
 										# jdk目录
 										javapath=\'/usr/local/soft/jdk-13//bin\'
 										# java编译参数
