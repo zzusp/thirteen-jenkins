@@ -1,0 +1,191 @@
+pipeline{
+	//定义触发器
+    //triggers {
+        //GenericTrigger(
+			/*
+			使用Generic Webhook Triggered
+			从gitlab的webhook post的数据中获取相关的项目信息
+			*/
+            // genericVariables: [
+            //    [key: 'MR_TO_BRANCH', value: '$.object_attributes.target_branch'],
+            //    [key: 'MR_OBJECT_KIND', value: '$.object_kind'],
+            //    [key: 'MR_ACTION', value: '$.object_attributes.action', defaultValue: 'merge']
+            //],
+			/*	
+			Token使用项目名称
+			配置在Gitlab的webhook地址为：
+			*/
+            //token: 'xxxxx',
+            //causeString: 'Triggered',
+			/*
+			同一个项目webhook的地址是一致的，需要根据分支等信息触发不同的流程
+			regexpFilterExpression的表达式是标准Java Regex Pattern
+			注意由于是包含在引号中，所以特殊字符需要转义
+			将<BRANCH NAME>替换成正式的branch名字，比如：
+			regexpFilterExpression: '^xxxxx\\smerge_request\\smerge',
+			*/
+        //)
+    //}
+	//代理节点，这里使用任意类型的（可选node、docker、k8s等）
+    agent any
+	//定义流程
+    stages {
+		//定义Build之前的预处理流程
+        stage('Pre') {
+			/*	
+			所有执行的脚本都放在steps块中
+			任意脚本返回失败之后都会跳出处理快
+			如果是自己写的脚本需要通过'exit 1'返回错误
+			*/
+            steps{
+				//开始运行
+				echo 'Pre-build Steps......'
+				/* 
+				使用Config File插件将存放在Jenkins的中配置文件复制到项目中
+				比如Java Spring工程中，可以将测试和生产环境的application.properties或者bootstrap文件放在jenkins中
+				防止因分支中提交了本地测试的文件而产生连接错误或者部署失败
+				*/
+                //configFileProvider([configFile(fileId: 'internal_test_bootstrap.yml', targetLocation: 'src/main/resources/')]) {}
+				//将configfile中的文件名改为正式的文件名
+				//sh 'mv src/main/resources/internal_test_bootstrap.yml src/main/resources/bootstrap.yml'
+            }
+        }
+		//定义Build处理流程
+        stage('Build') {
+            steps{
+				//开始运行
+				echo 'Build Steps......'
+				/*
+				使用Maven插件进行编译
+				*/
+                withMaven(
+					//jdk版本需要在Jenkins全局设置中预先定义
+					jdk: 'JDK-13',
+					//Maven版本需要在Jenkins全局设置中预先定义
+					maven: 'Maven3.3.9',
+					//不创建artifacts
+					options: [
+						artifactsPublisher(disabled: true),
+						junitPublisher(disabled: true),
+						openTasksPublisher(disabled: true),
+						pipelineGraphPublisher(disabled: true),
+						dependenciesFingerprintPublisher(disabled: true)
+					]
+					//使用内部本地maven库
+					//mavenSettingsFilePath: '/opt/maven/settings.xml'
+					)
+				{
+					sh 'mvn clean package -pl thirteen-gateway -am -Dmaven.test.skip=true -P prod'
+				}
+            }
+        }
+		//定义Build之后的处理流程
+        stage('Post') {
+            steps{
+				//开始运行
+				//由于maven的错误消息可以被Jenkins识别，所以不需要额外判断Build过程是否正确
+				echo 'Post-Build Steps......'
+				/*
+				1.将编译成功并需要部署的文件复制到临时目录中，方便后续SFTP传输
+				*/
+				//sh 'mkdir -p sftp'
+				//sh 'rm -rf sftp/*'
+				//sh 'mv target/*.jar sftp'
+				sh '''
+					cd thirteen-gateway
+					mkdir -p sftp
+					rm -rf sftp/*
+					mv target/*.jar sftp
+				'''
+				/*
+				2.使用Publisher to SSH插件部署文件并在远程服务器上运行脚本
+				*/
+				sshPublisher(
+					publishers: [
+						sshPublisherDesc(
+							//ssh服务器连接名称需要到Jenkins管理中添加
+							configName: '122.152.221.117',
+							sshCredentials: [
+								//用户名
+								username: 'root',
+								/*
+								密码需要使用Jenkins服务进行加密
+								使用网址：http://localhost:8080/script
+								在页面上运行脚本：println(hudson.util.Secret.fromString("<password>").getEncryptedValue())
+								将得到加密后的字符串复制过来
+								*/
+								encryptedPassphrase: '{AQAAABAAAAAQ1AnObtd+nnwBxrK2pUfrGYd+USudVj2YprQvfb9Wqh8=}',
+								key: '', 
+								keyPath: ''
+							], 
+							transfers: [
+								sshTransfer(
+									//本地需要上传的文件
+									sourceFiles: 'thirteen-gateway/sftp/*.jar',
+									//去除前缀
+									removePrefix: 'thirteen-gateway/sftp',
+									//需要上传远程服务器的相对目录地址
+									remoteDirectory: '/usr/local/soft/jenkins/thirteen-gateway/sftp',
+									//部署超时设定
+									execTimeout: 600000, 
+									cleanRemote: false, 
+									excludes: '', 
+									//执行命令
+									execCommand: '''
+										# 设置需要部署的文件名，可以使用通配符部署多个jar包
+										searchname=\'thirteen-gateway.jar\'
+										# 服务器原始文件目录
+										sourcepath=\'/usr/local/soft/jenkins/thirteen-gateway/sftp\'
+										# 服务器最终部署目录
+										targetpath=\'/usr/local/soft/jenkins/thirteen-gateway/target\'
+										# 服务器备份目录
+										backuppath=\'/usr/local/soft/jenkins/thirteen-gateway/backup\'
+										# jdk目录
+										javapath=\'/usr/local/soft/jdk-13//bin\'
+										# java编译参数
+										javaoptions=\'-Xmx64M -Xms8M\'
+										jpscmd="$javapath/jps"
+										javacmd="$javapath/java"
+										set -x
+										# create folder
+										mkdir -p $targetpath
+										mkdir -p $backuppath
+										# Kill java process by search name
+										$jpscmd | grep "$searchname" | cut -d \' \' -f1 | xargs -r kill -9
+										sleep 5s
+										# clear backup folder
+										find $backuppath -type f -name "$searchname" | xargs -r rm -rf
+										# copy target file to backup folder
+										find $targetpath -type f -name "$searchname" | xargs -r -I \'{}\' mv {} $backuppath
+										# clear target folder
+										find $targetpath -type f -name "$searchname" | xargs -r rm -rf
+										# copy source file to target folder
+										find $sourcepath -type f -name "$searchname" | xargs -r -I \'{}\' mv {} $targetpath
+										# cd to targetpath
+										cd $targetpath
+										# set command line
+										javacommand="nohup $javacmd -jar $searchname > out.log 2>&1 $javaoptions &"
+										# execute command
+										sh -c "$javacommand"
+										# wait for service status change to OK
+										sleep 30s
+										tail -n 5000 out.log
+										exit 0
+									''', 
+									flatten: false, 
+									makeEmptyDirs: false, 
+									noDefaultExcludes: false, 
+									patternSeparator: '[, ]+', 
+									remoteDirectorySDF: false
+								)
+							], 
+							usePromotionTimestamp: false, 
+							useWorkspaceInPromotion: false, 
+							verbose: true
+						)
+					]
+				)
+            }
+        }
+    }
+}
