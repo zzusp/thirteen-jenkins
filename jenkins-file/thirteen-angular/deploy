@@ -1,0 +1,127 @@
+pipeline{
+	//triggers {
+        //GenericTrigger(
+			/*
+			使用Generic Webhook Triggered
+			从gitlab的webhook post的数据中获取相关的项目信息
+			*/
+            // genericVariables: [
+            //    [key: 'MR_TO_BRANCH', value: '$.object_attributes.target_branch'],
+            //    [key: 'MR_OBJECT_KIND', value: '$.object_kind'],
+            //    [key: 'MR_ACTION', value: '$.object_attributes.action', defaultValue: 'merge']
+            //],
+			/*	
+			Token使用项目名称
+			配置在Gitlab的webhook地址为：
+			*/
+            //token: 'xxxxx',
+            //causeString: 'Triggered',
+			/*
+			同一个项目webhook的地址是一致的，需要根据分支等信息触发不同的流程
+			regexpFilterExpression的表达式是标准Java Regex Pattern
+			注意由于是包含在引号中，所以特殊字符需要转义
+			将<BRANCH NAME>替换成正式的branch名字，比如：
+			regexpFilterExpression: '^xxxxx\\smerge_request\\smerge',
+			*/
+        //)
+    //}
+	//代理节点，这里使用任意类型的（可选node、docker、k8s等）
+    agent any
+	//定义流程
+    stages {
+		//定义Build处理流程
+        stage('Build') {
+            steps{
+				//开始运行
+				echo 'Build Steps......'
+				/*
+				使用NodeJS插件进行编译
+				*/
+				nodejs('v11') {
+				    sh '''
+				        npm set registry https://registry.npm.taobao.org
+						npm info underscore
+				        npm install
+				        npm run build-prod-base
+						node -v
+						npm -v
+				    '''
+				}
+            }
+        }
+		//定义Build之后的处理流程
+        stage('Post') {
+            steps{
+				//开始运行
+				/*
+				1.将编译成功并需要部署的文件复制到临时目录中，方便后续SFTP传输
+				*/
+				sh '''
+					mkdir -p sftp
+					cd sftp
+					rm -f ./*.tar.gz
+					cd ../dist
+					tar -zcf ../sftp/dist.tar.gz ./*
+				'''
+				/*
+				2.使用Publisher to SSH插件部署文件并在远程服务器上运行脚本
+				*/				
+				sshPublisher(
+					publishers: [
+						sshPublisherDesc(
+							//ssh服务器连接名称需要到Jenkins管理中添加
+							configName: '122.152.221.117',
+							sshCredentials: [
+								//用户名
+								username: 'root',
+								/*
+								密码需要使用Jenkins服务进行加密
+								使用网址：http://localhost:8080/script
+								在页面上运行脚本：println(hudson.util.Secret.fromString("<password>").getEncryptedValue())
+								将得到加密后的字符串复制过来
+								*/
+								encryptedPassphrase: '{AQAAABAAAAAQ1AnObtd+nnwBxrK2pUfrGYd+USudVj2YprQvfb9Wqh8=}',
+								key: '', 
+								keyPath: ''
+							], 
+							transfers: [
+								sshTransfer(
+									//本地需要上传的文件
+									sourceFiles: 'sftp/dist.tar.gz',
+									//去除前缀
+									removePrefix: 'sftp',
+									//需要上传远程服务器的相对目录地址
+									remoteDirectory: '/usr/local/soft/nginx/thirteen-angular',
+									//部署超时设定
+									execTimeout: 120000, 
+									cleanRemote: false, 
+									excludes: '', 
+									//执行命令
+									execCommand: '''
+										cd /usr/local/soft/nginx
+										mkdir -p ./thirteen-angular/backup
+										rm -rf ./thirteen-angular/backup/*
+										mv ./thirteen-angular/dist/* ./thirteen-angular/backup
+										./sbin/nginx -s stop
+										rm -rf ./thirteen-angular/dist/*
+										tar -zxf ./thirteen-angular/dist.tar.gz -C ./thirteen-angular/dist
+										./sbin/nginx
+										rm -rf ./thirteen-angular/dist.tar.gz
+									''', 
+									flatten: false, 
+									makeEmptyDirs: false, 
+									noDefaultExcludes: false, 
+									patternSeparator: '[, ]+', 
+									remoteDirectorySDF: false
+								)
+							], 
+							usePromotionTimestamp: false, 
+							useWorkspaceInPromotion: false, 
+							verbose: true
+						)
+					]
+				)				
+            }
+        }
+    }
+}
