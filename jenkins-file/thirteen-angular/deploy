@@ -42,6 +42,7 @@ pipeline{
 						node -v
 						npm -v
 				        npm set registry https://registry.npm.taobao.org
+						npm cache clean -f
 						npm config set sass_binary_site=https://npm.taobao.org/mirrors/node-sass
 						npm i node-sass -D --verbose
 				        npm install
