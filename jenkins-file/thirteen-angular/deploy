@@ -41,6 +41,7 @@ pipeline{
 				    sh '''
 						node -v
 						npm -v
+						npm cache clean -f
 				        npm install
 				        npm run build-prod-base
 				    '''
