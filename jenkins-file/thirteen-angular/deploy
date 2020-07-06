@@ -47,6 +47,7 @@ pipeline{
 				        #npm install -g n
 				        #n stable
 				        # 如果node-sass源安装失败，使用下面两行安装
+					npm config set sass_binary_site=https://registry.npmjs.org/mirrors/node-sass
 				        #npm config set sass_binary_site=https://npm.taobao.org/mirrors/node-sass
 				        #npm i node-sass -D --verbose
 				        npm install
