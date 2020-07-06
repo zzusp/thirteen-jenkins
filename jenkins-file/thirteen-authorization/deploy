@@ -78,9 +78,7 @@ pipeline{
 					sh '''
 						whoami
 						chown -R root /var/jenkins_home
-						cd /var/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/Maven3.6.3/bin/
-						ll -h
-						cd /var/jenkins_home/workspace/thirteen-authorization
+						cd thirteen-authorization
 						mvn clean package -pl thirteen-authorization-starter -am -Dmaven.test.skip=true -P prod
 					'''
 				}
