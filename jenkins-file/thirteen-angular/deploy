@@ -2,8 +2,8 @@ pipeline{
 	//triggers {
         //GenericTrigger(
 			/*
-			Ê¹ÓÃGeneric Webhook Triggered
-			´ÓgitlabµÄwebhook postµÄÊı¾İÖĞ»ñÈ¡Ïà¹ØµÄÏîÄ¿ĞÅÏ¢
+			ä½¿ç”¨Generic Webhook Triggered
+			ä»gitlabçš„webhook postçš„æ•°æ®ä¸­è·å–ç›¸å…³çš„é¡¹ç›®ä¿¡æ¯
 			*/
             // genericVariables: [
             //    [key: 'MR_TO_BRANCH', value: '$.object_attributes.target_branch'],
@@ -11,55 +11,55 @@ pipeline{
             //    [key: 'MR_ACTION', value: '$.object_attributes.action', defaultValue: 'merge']
             //],
 			/*	
-			TokenÊ¹ÓÃÏîÄ¿Ãû³Æ
-			ÅäÖÃÔÚGitlabµÄwebhookµØÖ·Îª£º
+			Tokenä½¿ç”¨é¡¹ç›®åç§°
+			é…ç½®åœ¨Gitlabçš„webhookåœ°å€ä¸ºï¼š
 			*/
             //token: 'xxxxx',
             //causeString: 'Triggered',
 			/*
-			Í¬Ò»¸öÏîÄ¿webhookµÄµØÖ·ÊÇÒ»ÖÂµÄ£¬ĞèÒª¸ù¾İ·ÖÖ§µÈĞÅÏ¢´¥·¢²»Í¬µÄÁ÷³Ì
-			regexpFilterExpressionµÄ±í´ïÊ½ÊÇ±ê×¼Java Regex Pattern
-			×¢ÒâÓÉÓÚÊÇ°üº¬ÔÚÒıºÅÖĞ£¬ËùÒÔÌØÊâ×Ö·ûĞèÒª×ªÒå
-			½«<BRANCH NAME>Ìæ»»³ÉÕıÊ½µÄbranchÃû×Ö£¬±ÈÈç£º
+			åŒä¸€ä¸ªé¡¹ç›®webhookçš„åœ°å€æ˜¯ä¸€è‡´çš„ï¼Œéœ€è¦æ ¹æ®åˆ†æ”¯ç­‰ä¿¡æ¯è§¦å‘ä¸åŒçš„æµç¨‹
+			regexpFilterExpressionçš„è¡¨è¾¾å¼æ˜¯æ ‡å‡†Java Regex Pattern
+			æ³¨æ„ç”±äºæ˜¯åŒ…å«åœ¨å¼•å·ä¸­ï¼Œæ‰€ä»¥ç‰¹æ®Šå­—ç¬¦éœ€è¦è½¬ä¹‰
+			å°†<BRANCH NAME>æ›¿æ¢æˆæ­£å¼çš„branchåå­—ï¼Œæ¯”å¦‚ï¼š
 			regexpFilterExpression: '^xxxxx\\smerge_request\\smerge',
 			*/
         //)
     //}
-	//´úÀí½Úµã£¬ÕâÀïÊ¹ÓÃÈÎÒâÀàĞÍµÄ£¨¿ÉÑ¡node¡¢docker¡¢k8sµÈ£©
+	//ä»£ç†èŠ‚ç‚¹ï¼Œè¿™é‡Œä½¿ç”¨ä»»æ„ç±»å‹çš„ï¼ˆå¯é€‰nodeã€dockerã€k8sç­‰ï¼‰
     agent any
-	//¶¨ÒåÁ÷³Ì
+	//å®šä¹‰æµç¨‹
     stages {
-		//¶¨ÒåBuild´¦ÀíÁ÷³Ì
+		//å®šä¹‰Buildå¤„ç†æµç¨‹
         stage('Build') {
             steps{
-				//¿ªÊ¼ÔËĞĞ
+				//å¼€å§‹è¿è¡Œ
 				echo 'Build Steps......'
 				/*
-				Ê¹ÓÃNodeJS²å¼ş½øĞĞ±àÒë
+				ä½¿ç”¨NodeJSæ’ä»¶è¿›è¡Œç¼–è¯‘
 				*/
-				nodejs('NodeJS13.11.0') {
+				nodejs('NodeJS14.5.0') {
 				    sh '''
-						node -v
-						npm -v
+				        node -v
+				        npm -v
 				        npm set registry https://registry.npm.taobao.org
-						#npm cache clean -f --force
-						#npm install -g n
-						#n stable
-						# Èç¹ûnode-sassÔ´°²×°Ê§°Ü£¬Ê¹ÓÃÏÂÃæÁ½ĞĞ°²×°
-						npm config set sass_binary_site=https://npm.taobao.org/mirrors/node-sass
-						npm i node-sass -D --verbose
+				        #npm cache clean -f --force
+				        #npm install -g n
+				        #n stable
+				        # å¦‚æœnode-sassæºå®‰è£…å¤±è´¥ï¼Œä½¿ç”¨ä¸‹é¢ä¸¤è¡Œå®‰è£…
+				        npm config set sass_binary_site=https://npm.taobao.org/mirrors/node-sass
+				        npm i node-sass -D --verbose
 				        npm install
 				        npm run build-prod-base --max_old_space_size=1536
 				    '''
 				}
             }
         }
-		//¶¨ÒåBuildÖ®ºóµÄ´¦ÀíÁ÷³Ì
+	//å®šä¹‰Buildä¹‹åçš„å¤„ç†æµç¨‹
         stage('Post') {
             steps{
-				//¿ªÊ¼ÔËĞĞ
+				//å¼€å§‹è¿è¡Œ
 				/*
-				1.½«±àÒë³É¹¦²¢ĞèÒª²¿ÊğµÄÎÄ¼ş¸´ÖÆµ½ÁÙÊ±Ä¿Â¼ÖĞ£¬·½±ãºóĞøSFTP´«Êä
+				1.å°†ç¼–è¯‘æˆåŠŸå¹¶éœ€è¦éƒ¨ç½²çš„æ–‡ä»¶å¤åˆ¶åˆ°ä¸´æ—¶ç›®å½•ä¸­ï¼Œæ–¹ä¾¿åç»­SFTPä¼ è¾“
 				*/
 				sh '''
 					mkdir -p sftp
@@ -69,39 +69,39 @@ pipeline{
 					tar -zcf ../sftp/dist.tar.gz ./*
 				'''
 				/*
-				2.Ê¹ÓÃPublisher to SSH²å¼ş²¿ÊğÎÄ¼ş²¢ÔÚÔ¶³Ì·şÎñÆ÷ÉÏÔËĞĞ½Å±¾
+				2.ä½¿ç”¨Publisher to SSHæ’ä»¶éƒ¨ç½²æ–‡ä»¶å¹¶åœ¨è¿œç¨‹æœåŠ¡å™¨ä¸Šè¿è¡Œè„šæœ¬
 				*/				
 				sshPublisher(
 					publishers: [
 						sshPublisherDesc(
-							//ssh·şÎñÆ÷Á¬½ÓÃû³ÆĞèÒªµ½Jenkins¹ÜÀíÖĞÌí¼Ó
+							//sshæœåŠ¡å™¨è¿æ¥åç§°éœ€è¦åˆ°Jenkinsç®¡ç†ä¸­æ·»åŠ 
 							configName: '122.152.221.117',
 							sshCredentials: [
-								//ÓÃ»§Ãû
+								//ç”¨æˆ·å
 								username: 'root',
 								/*
-								ÃÜÂëĞèÒªÊ¹ÓÃJenkins·şÎñ½øĞĞ¼ÓÃÜ
-								Ê¹ÓÃÍøÖ·£ºhttp://localhost:8080/script
-								ÔÚÒ³ÃæÉÏÔËĞĞ½Å±¾£ºprintln(hudson.util.Secret.fromString("<password>").getEncryptedValue())
-								½«µÃµ½¼ÓÃÜºóµÄ×Ö·û´®¸´ÖÆ¹ıÀ´
+								å¯†ç éœ€è¦ä½¿ç”¨JenkinsæœåŠ¡è¿›è¡ŒåŠ å¯†
+								ä½¿ç”¨ç½‘å€ï¼šhttp://localhost:8080/script
+								åœ¨é¡µé¢ä¸Šè¿è¡Œè„šæœ¬ï¼šprintln(hudson.util.Secret.fromString("<password>").getEncryptedValue())
+								å°†å¾—åˆ°åŠ å¯†åçš„å­—ç¬¦ä¸²å¤åˆ¶è¿‡æ¥
 								*/
-								encryptedPassphrase: '{AQAAABAAAAAQ1AnObtd+nnwBxrK2pUfrGYd+USudVj2YprQvfb9Wqh8=}',
+								encryptedPassphrase: '{AQAAABAAAAAQg89pYdWmosLKQB8fDD1AtVInajYeiKRWNeXwuF7F+xU=}',
 								key: '', 
 								keyPath: ''
 							], 
 							transfers: [
 								sshTransfer(
-									//±¾µØĞèÒªÉÏ´«µÄÎÄ¼ş
+									//æœ¬åœ°éœ€è¦ä¸Šä¼ çš„æ–‡ä»¶
 									sourceFiles: 'sftp/dist.tar.gz',
-									//È¥³ıÇ°×º
+									//å»é™¤å‰ç¼€
 									removePrefix: 'sftp',
-									//ĞèÒªÉÏ´«Ô¶³Ì·şÎñÆ÷µÄÏà¶ÔÄ¿Â¼µØÖ·
+									//éœ€è¦ä¸Šä¼ è¿œç¨‹æœåŠ¡å™¨çš„ç›¸å¯¹ç›®å½•åœ°å€
 									remoteDirectory: '/usr/local/soft/nginx/thirteen-angular',
-									//²¿Êğ³¬Ê±Éè¶¨
+									//éƒ¨ç½²è¶…æ—¶è®¾å®š
 									execTimeout: 120000, 
 									cleanRemote: false, 
 									excludes: '', 
-									//Ö´ĞĞÃüÁî
+									//æ‰§è¡Œå‘½ä»¤
 									execCommand: '''
 										cd /usr/local/soft/nginx
 										mkdir -p ./thirteen-angular/backup
