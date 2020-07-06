@@ -37,7 +37,7 @@ pipeline{
 				/*
 				使用NodeJS插件进行编译
 				*/
-				nodejs('NodeJS14.5.0') {
+				nodejs('NodeJS13.11.0') {
 				    sh '''
 				        node -v
 				        npm -v
