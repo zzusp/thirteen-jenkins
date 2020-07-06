@@ -40,8 +40,6 @@ pipeline{
             steps{
 				//开始运行
 				echo 'Pre-build Steps......'
-				//打印当前用户
-				sh 'whoami'
 				/* 
 				使用Config File插件将存放在Jenkins的中配置文件复制到项目中
 				比如Java Spring工程中，可以将测试和生产环境的application.properties或者bootstrap文件放在jenkins中
@@ -78,6 +76,7 @@ pipeline{
 					)
 				{
 					sh '''
+						whoami
 						cd thirteen-authorization
 						mvn clean package -pl thirteen-authorization-starter -am -Dmaven.test.skip=true -P prod
 					'''
