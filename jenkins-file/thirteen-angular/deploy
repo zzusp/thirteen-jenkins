@@ -52,7 +52,7 @@ pipeline{
 					npm i node-sass -D --verbose
 				        npm install
 					# --max-new-space-size
-				        npm run build-prod-base --max_old_space_size=256
+				        npm run build-prod-base --max-old-space-size=1024
 				    '''
 				}
             }
@@ -65,71 +65,4 @@ pipeline{
 				1.将编译成功并需要部署的文件复制到临时目录中，方便后续SFTP传输
 				*/
 				sh '''
-					mkdir -p sftp
-					cd sftp
-					rm -f ./*.tar.gz
-					cd ../dist
-					tar -zcf ../sftp/dist.tar.gz ./*
-				'''
-				/*
-				2.使用Publisher to SSH插件部署文件并在远程服务器上运行脚本
-				*/				
-				sshPublisher(
-					publishers: [
-						sshPublisherDesc(
-							//ssh服务器连接名称需要到Jenkins管理中添加
-							configName: '122.152.221.117',
-							sshCredentials: [
-								//用户名
-								username: 'root',
-								/*
-								密码需要使用Jenkins服务进行加密
-								使用网址：http://localhost:8080/script
-								在页面上运行脚本：println(hudson.util.Secret.fromString("<password>").getEncryptedValue())
-								将得到加密后的字符串复制过来
-								*/
-								encryptedPassphrase: '{AQAAABAAAAAQg89pYdWmosLKQB8fDD1AtVInajYeiKRWNeXwuF7F+xU=}',
-								key: '', 
-								keyPath: ''
-							], 
-							transfers: [
-								sshTransfer(
-									//本地需要上传的文件
-									sourceFiles: 'sftp/dist.tar.gz',
-									//去除前缀
-									removePrefix: 'sftp',
-									//需要上传远程服务器的相对目录地址
-									remoteDirectory: '/usr/local/soft/nginx/thirteen-angular',
-									//部署超时设定
-									execTimeout: 120000, 
-									cleanRemote: false, 
-									excludes: '', 
-									//执行命令
-									execCommand: '''
-										cd /usr/local/soft/nginx
-										mkdir -p ./thirteen-angular/backup
-										rm -rf ./thirteen-angular/backup/*
-										mv ./thirteen-angular/dist/* ./thirteen-angular/backup
-										./sbin/nginx -s stop
-										rm -rf ./thirteen-angular/dist/*
-										tar -zxf ./thirteen-angular/dist.tar.gz -C ./thirteen-angular/dist
-										./sbin/nginx
-										rm -rf ./thirteen-angular/dist.tar.gz
-									''', 
-									flatten: false, 
-									makeEmptyDirs: false, 
-									noDefaultExcludes: false, 
-									patternSeparator: '[, ]+', 
-									remoteDirectorySDF: false
-								)
-							], 
-							usePromotionTimestamp: false, 
-							useWorkspaceInPromotion: false, 
-							verbose: true
-						)
-					]
-				)				
-            }
-        }
-    }
-}
+				
