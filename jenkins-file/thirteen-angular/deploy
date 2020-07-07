@@ -54,8 +54,8 @@ pipeline{
 					#npm config set sass_binary_site=https://registry.npmjs.org/mirrors/node-sass
 				        npm config set sass_binary_site=https://npm.taobao.org/mirrors/node-sass
 				        npm i node-sass -D --verbose
-				        npm install
-				        npm run build-prod-base --max_old_space_size=1536
+				        #npm install
+				        #npm run build-prod-base --max_old_space_size=1536
 				    '''
 				}
             }
