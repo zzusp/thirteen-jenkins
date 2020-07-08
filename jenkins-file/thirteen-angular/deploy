@@ -37,7 +37,7 @@ pipeline{
 				/*
 				使用NodeJS插件进行编译
 				*/
-				nodejs('NodeJS12.18.2') {
+				nodejs('NodeJS14.5.0') {
 				    sh '''
 				        node -v
 				        npm -v
@@ -48,8 +48,8 @@ pipeline{
 				        #n stable
 				        # 如果node-sass源安装失败，使用下面两行安装
 					#npm config set sass_binary_site=https://registry.npmjs.org/mirrors/node-sass
-				        npm config set sass_binary_site=https://npm.taobao.org/mirrors/node-sass
-					npm i node-sass@4.11.0 -D --verbose
+				        #npm config set sass_binary_site=https://npm.taobao.org/mirrors/node-sass
+					#npm i node-sass@4.11.0 -D --verbose
 					#npm rebuild node-sass
 				        npm install
 					# --max-new-space-size
