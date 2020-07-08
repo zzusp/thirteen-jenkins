@@ -52,7 +52,7 @@ pipeline{
 					npm i node-sass -D --verbose
 				        npm install
 					# --max-new-space-size
-				        npm run build-prod-base --max-old-space-size=1024
+				        npm run build-prod-base --max-old-space-size=2048
 				    '''
 				}
             }
