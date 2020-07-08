@@ -50,6 +50,7 @@ pipeline{
 					#npm config set sass_binary_site=https://registry.npmjs.org/mirrors/node-sass
 				        npm config set sass_binary_site=https://npm.taobao.org/mirrors/node-sass
 					npm i node-sass -D --verbose
+					npm rebuild node-sass
 				        npm install
 					# --max-new-space-size
 				        npm run build-prod-base --max-old-space-size=2048
