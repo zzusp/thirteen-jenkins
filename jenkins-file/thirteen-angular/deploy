@@ -68,7 +68,7 @@ pipeline{
 					cd sftp
 					rm -f ./*.tar.gz
 					cd ../dist
-					tar -zcf ../sftp/dist.tar.gz ./*
+					tar -zcf ../sftp/dist.tar.gz ./thirteen-angular/*
 				'''
 				/*
 				2.使用Publisher to SSH插件部署文件并在远程服务器上运行脚本
