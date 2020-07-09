@@ -53,7 +53,7 @@ pipeline{
 					#npm rebuild node-sass
 				        npm install
 					# --max-new-space-size
-				        npm run build-prod-base --max-old-space-size=2048
+				        npm run build-prod-base
 				    '''
 				}
             }
