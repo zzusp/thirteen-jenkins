@@ -75,7 +75,7 @@ pipeline{
 					//mavenSettingsFilePath: '/opt/maven/settings.xml'
 					)
 				{
-					sh 'mvn clean package -pl thirteen-zuul -am -Dmaven.test.skip=true -P prod'
+					sh 'mvn clean package -pl thirteen-gateway -am -Dmaven.test.skip=true -P prod'
 				}
             }
         }
@@ -92,7 +92,7 @@ pipeline{
 				//sh 'rm -rf sftp/*'
 				//sh 'mv target/*.jar sftp'
 				sh '''
-					cd thirteen-zuul
+					cd thirteen-gateway
 					mkdir -p sftp
 					rm -rf sftp/*
 					mv target/*.jar sftp
@@ -114,18 +114,18 @@ pipeline{
 								在页面上运行脚本：println(hudson.util.Secret.fromString("<password>").getEncryptedValue())
 								将得到加密后的字符串复制过来
 								*/
-								encryptedPassphrase: '{AQAAABAAAAAQ1AnObtd+nnwBxrK2pUfrGYd+USudVj2YprQvfb9Wqh8=}',
+								encryptedPassphrase: '{AQAAABAAAAAQg89pYdWmosLKQB8fDD1AtVInajYeiKRWNeXwuF7F+xU=}',
 								key: '', 
 								keyPath: ''
 							], 
 							transfers: [
 								sshTransfer(
 									//本地需要上传的文件
-									sourceFiles: 'thirteen-zuul/sftp/*.jar',
+									sourceFiles: 'thirteen-gateway/sftp/*.jar',
 									//去除前缀
-									removePrefix: 'thirteen-zuul/sftp',
+									removePrefix: 'thirteen-gateway/sftp',
 									//需要上传远程服务器的相对目录地址
-									remoteDirectory: '/usr/local/soft/jenkins/thirteen-zuul/sftp',
+									remoteDirectory: '/usr/local/soft/jenkins/thirteen-gateway/sftp',
 									//部署超时设定
 									execTimeout: 600000, 
 									cleanRemote: false, 
@@ -133,13 +133,13 @@ pipeline{
 									//执行命令
 									execCommand: '''
 										# 设置需要部署的文件名，可以使用通配符部署多个jar包
-										searchname=\'thirteen-zuul.jar\'
+										searchname=\'thirteen-gateway.jar\'
 										# 服务器原始文件目录
-										sourcepath=\'/usr/local/soft/jenkins/thirteen-zuul/sftp\'
+										sourcepath=\'/usr/local/soft/jenkins/thirteen-gateway/sftp\'
 										# 服务器最终部署目录
-										targetpath=\'/usr/local/soft/jenkins/thirteen-zuul/target\'
+										targetpath=\'/usr/local/soft/jenkins/thirteen-gateway/target\'
 										# 服务器备份目录
-										backuppath=\'/usr/local/soft/jenkins/thirteen-zuul/backup\'
+										backuppath=\'/usr/local/soft/jenkins/thirteen-gateway/backup\'
 										# jdk目录
 										javapath=\'/usr/local/soft/jdk-13//bin\'
 										# java编译参数
