@@ -1,10 +1,10 @@
 pipeline{
-	//¶¨Òå´¥·¢Æ÷
+	//å®šä¹‰è§¦å‘å™¨
     //triggers {
         //GenericTrigger(
 			/*
-			Ê¹ÓÃGeneric Webhook Triggered
-			´ÓgitlabµÄwebhook postµÄÊı¾İÖĞ»ñÈ¡Ïà¹ØµÄÏîÄ¿ĞÅÏ¢
+			ä½¿ç”¨Generic Webhook Triggered
+			ä»gitlabçš„webhook postçš„æ•°æ®ä¸­è·å–ç›¸å…³çš„é¡¹ç›®ä¿¡æ¯
 			*/
             // genericVariables: [
             //    [key: 'MR_TO_BRANCH', value: '$.object_attributes.target_branch'],
@@ -12,58 +12,58 @@ pipeline{
             //    [key: 'MR_ACTION', value: '$.object_attributes.action', defaultValue: 'merge']
             //],
 			/*	
-			TokenÊ¹ÓÃÏîÄ¿Ãû³Æ
-			ÅäÖÃÔÚGitlabµÄwebhookµØÖ·Îª£º
+			Tokenä½¿ç”¨é¡¹ç›®åç§°
+			é…ç½®åœ¨Gitlabçš„webhookåœ°å€ä¸ºï¼š
 			*/
             //token: 'xxxxx',
             //causeString: 'Triggered',
 			/*
-			Í¬Ò»¸öÏîÄ¿webhookµÄµØÖ·ÊÇÒ»ÖÂµÄ£¬ĞèÒª¸ù¾İ·ÖÖ§µÈĞÅÏ¢´¥·¢²»Í¬µÄÁ÷³Ì
-			regexpFilterExpressionµÄ±í´ïÊ½ÊÇ±ê×¼Java Regex Pattern
-			×¢ÒâÓÉÓÚÊÇ°üº¬ÔÚÒıºÅÖĞ£¬ËùÒÔÌØÊâ×Ö·ûĞèÒª×ªÒå
-			½«<BRANCH NAME>Ìæ»»³ÉÕıÊ½µÄbranchÃû×Ö£¬±ÈÈç£º
+			åŒä¸€ä¸ªé¡¹ç›®webhookçš„åœ°å€æ˜¯ä¸€è‡´çš„ï¼Œéœ€è¦æ ¹æ®åˆ†æ”¯ç­‰ä¿¡æ¯è§¦å‘ä¸åŒçš„æµç¨‹
+			regexpFilterExpressionçš„è¡¨è¾¾å¼æ˜¯æ ‡å‡†Java Regex Pattern
+			æ³¨æ„ç”±äºæ˜¯åŒ…å«åœ¨å¼•å·ä¸­ï¼Œæ‰€ä»¥ç‰¹æ®Šå­—ç¬¦éœ€è¦è½¬ä¹‰
+			å°†<BRANCH NAME>æ›¿æ¢æˆæ­£å¼çš„branchåå­—ï¼Œæ¯”å¦‚ï¼š
 			regexpFilterExpression: '^xxxxx\\smerge_request\\smerge',
 			*/
         //)
     //}
-	//´úÀí½Úµã£¬ÕâÀïÊ¹ÓÃÈÎÒâÀàĞÍµÄ£¨¿ÉÑ¡node¡¢docker¡¢k8sµÈ£©
+	//ä»£ç†èŠ‚ç‚¹ï¼Œè¿™é‡Œä½¿ç”¨ä»»æ„ç±»å‹çš„ï¼ˆå¯é€‰nodeã€dockerã€k8sç­‰ï¼‰
     agent any
-	//¶¨ÒåÁ÷³Ì
+	//å®šä¹‰æµç¨‹
     stages {
-		//¶¨ÒåBuildÖ®Ç°µÄÔ¤´¦ÀíÁ÷³Ì
+		//å®šä¹‰Buildä¹‹å‰çš„é¢„å¤„ç†æµç¨‹
         stage('Pre') {
 			/*	
-			ËùÓĞÖ´ĞĞµÄ½Å±¾¶¼·ÅÔÚsteps¿éÖĞ
-			ÈÎÒâ½Å±¾·µ»ØÊ§°ÜÖ®ºó¶¼»áÌø³ö´¦Àí¿ì
-			Èç¹ûÊÇ×Ô¼ºĞ´µÄ½Å±¾ĞèÒªÍ¨¹ı'exit 1'·µ»Ø´íÎó
+			æ‰€æœ‰æ‰§è¡Œçš„è„šæœ¬éƒ½æ”¾åœ¨stepså—ä¸­
+			ä»»æ„è„šæœ¬è¿”å›å¤±è´¥ä¹‹åéƒ½ä¼šè·³å‡ºå¤„ç†å¿«
+			å¦‚æœæ˜¯è‡ªå·±å†™çš„è„šæœ¬éœ€è¦é€šè¿‡'exit 1'è¿”å›é”™è¯¯
 			*/
             steps{
-				//¿ªÊ¼ÔËĞĞ
+				//å¼€å§‹è¿è¡Œ
 				echo 'Pre-build Steps......'
 				/* 
-				Ê¹ÓÃConfig File²å¼ş½«´æ·ÅÔÚJenkinsµÄÖĞÅäÖÃÎÄ¼ş¸´ÖÆµ½ÏîÄ¿ÖĞ
-				±ÈÈçJava Spring¹¤³ÌÖĞ£¬¿ÉÒÔ½«²âÊÔºÍÉú²ú»·¾³µÄapplication.properties»òÕßbootstrapÎÄ¼ş·ÅÔÚjenkinsÖĞ
-				·ÀÖ¹Òò·ÖÖ§ÖĞÌá½»ÁË±¾µØ²âÊÔµÄÎÄ¼ş¶ø²úÉúÁ¬½Ó´íÎó»òÕß²¿ÊğÊ§°Ü
+				ä½¿ç”¨Config Fileæ’ä»¶å°†å­˜æ”¾åœ¨Jenkinsçš„ä¸­é…ç½®æ–‡ä»¶å¤åˆ¶åˆ°é¡¹ç›®ä¸­
+				æ¯”å¦‚Java Springå·¥ç¨‹ä¸­ï¼Œå¯ä»¥å°†æµ‹è¯•å’Œç”Ÿäº§ç¯å¢ƒçš„application.propertiesæˆ–è€…bootstrapæ–‡ä»¶æ”¾åœ¨jenkinsä¸­
+				é˜²æ­¢å› åˆ†æ”¯ä¸­æäº¤äº†æœ¬åœ°æµ‹è¯•çš„æ–‡ä»¶è€Œäº§ç”Ÿè¿æ¥é”™è¯¯æˆ–è€…éƒ¨ç½²å¤±è´¥
 				*/
                 //configFileProvider([configFile(fileId: 'internal_test_bootstrap.yml', targetLocation: 'src/main/resources/')]) {}
-				//½«configfileÖĞµÄÎÄ¼şÃû¸ÄÎªÕıÊ½µÄÎÄ¼şÃû
+				//å°†configfileä¸­çš„æ–‡ä»¶åæ”¹ä¸ºæ­£å¼çš„æ–‡ä»¶å
 				//sh 'mv src/main/resources/internal_test_bootstrap.yml src/main/resources/bootstrap.yml'
             }
         }
-		//¶¨ÒåBuild´¦ÀíÁ÷³Ì
+		//å®šä¹‰Buildå¤„ç†æµç¨‹
         stage('Build') {
             steps{
-				//¿ªÊ¼ÔËĞĞ
+				//å¼€å§‹è¿è¡Œ
 				echo 'Build Steps......'
 				/*
-				Ê¹ÓÃMaven²å¼ş½øĞĞ±àÒë
+				ä½¿ç”¨Mavenæ’ä»¶è¿›è¡Œç¼–è¯‘
 				*/
                 withMaven(
-					//jdk°æ±¾ĞèÒªÔÚJenkinsÈ«¾ÖÉèÖÃÖĞÔ¤ÏÈ¶¨Òå
+					//jdkç‰ˆæœ¬éœ€è¦åœ¨Jenkinså…¨å±€è®¾ç½®ä¸­é¢„å…ˆå®šä¹‰
 					jdk: 'JDK-13',
-					//Maven°æ±¾ĞèÒªÔÚJenkinsÈ«¾ÖÉèÖÃÖĞÔ¤ÏÈ¶¨Òå
-					maven: 'Maven3.3.9',
-					//²»´´½¨artifacts
+					//Mavenç‰ˆæœ¬éœ€è¦åœ¨Jenkinså…¨å±€è®¾ç½®ä¸­é¢„å…ˆå®šä¹‰
+					maven: 'Maven3.6.3',
+					//ä¸åˆ›å»ºartifacts
 					options: [
 						artifactsPublisher(disabled: true),
 						junitPublisher(disabled: true),
@@ -71,7 +71,7 @@ pipeline{
 						pipelineGraphPublisher(disabled: true),
 						dependenciesFingerprintPublisher(disabled: true)
 					]
-					//Ê¹ÓÃÄÚ²¿±¾µØmaven¿â
+					//ä½¿ç”¨å†…éƒ¨æœ¬åœ°mavenåº“
 					//mavenSettingsFilePath: '/opt/maven/settings.xml'
 					)
 				{
@@ -79,14 +79,14 @@ pipeline{
 				}
             }
         }
-		//¶¨ÒåBuildÖ®ºóµÄ´¦ÀíÁ÷³Ì
+		//å®šä¹‰Buildä¹‹åçš„å¤„ç†æµç¨‹
         stage('Post') {
             steps{
-				//¿ªÊ¼ÔËĞĞ
-				//ÓÉÓÚmavenµÄ´íÎóÏûÏ¢¿ÉÒÔ±»JenkinsÊ¶±ğ£¬ËùÒÔ²»ĞèÒª¶îÍâÅĞ¶ÏBuild¹ı³ÌÊÇ·ñÕıÈ·
+				//å¼€å§‹è¿è¡Œ
+				//ç”±äºmavençš„é”™è¯¯æ¶ˆæ¯å¯ä»¥è¢«Jenkinsè¯†åˆ«ï¼Œæ‰€ä»¥ä¸éœ€è¦é¢å¤–åˆ¤æ–­Buildè¿‡ç¨‹æ˜¯å¦æ­£ç¡®
 				echo 'Post-Build Steps......'
 				/*
-				1.½«±àÒë³É¹¦²¢ĞèÒª²¿ÊğµÄÎÄ¼ş¸´ÖÆµ½ÁÙÊ±Ä¿Â¼ÖĞ£¬·½±ãºóĞøSFTP´«Êä
+				1.å°†ç¼–è¯‘æˆåŠŸå¹¶éœ€è¦éƒ¨ç½²çš„æ–‡ä»¶å¤åˆ¶åˆ°ä¸´æ—¶ç›®å½•ä¸­ï¼Œæ–¹ä¾¿åç»­SFTPä¼ è¾“
 				*/
 				//sh 'mkdir -p sftp'
 				//sh 'rm -rf sftp/*'
@@ -98,21 +98,21 @@ pipeline{
 					mv target/*.jar sftp
 				'''
 				/*
-				2.Ê¹ÓÃPublisher to SSH²å¼ş²¿ÊğÎÄ¼ş²¢ÔÚÔ¶³Ì·şÎñÆ÷ÉÏÔËĞĞ½Å±¾
+				2.ä½¿ç”¨Publisher to SSHæ’ä»¶éƒ¨ç½²æ–‡ä»¶å¹¶åœ¨è¿œç¨‹æœåŠ¡å™¨ä¸Šè¿è¡Œè„šæœ¬
 				*/
 				sshPublisher(
 					publishers: [
 						sshPublisherDesc(
-							//ssh·şÎñÆ÷Á¬½ÓÃû³ÆĞèÒªµ½Jenkins¹ÜÀíÖĞÌí¼Ó
+							//sshæœåŠ¡å™¨è¿æ¥åç§°éœ€è¦åˆ°Jenkinsç®¡ç†ä¸­æ·»åŠ 
 							configName: '122.152.221.117',
 							sshCredentials: [
-								//ÓÃ»§Ãû
+								//ç”¨æˆ·å
 								username: 'root',
 								/*
-								ÃÜÂëĞèÒªÊ¹ÓÃJenkins·şÎñ½øĞĞ¼ÓÃÜ
-								Ê¹ÓÃÍøÖ·£ºhttp://localhost:8080/script
-								ÔÚÒ³ÃæÉÏÔËĞĞ½Å±¾£ºprintln(hudson.util.Secret.fromString("<password>").getEncryptedValue())
-								½«µÃµ½¼ÓÃÜºóµÄ×Ö·û´®¸´ÖÆ¹ıÀ´
+								å¯†ç éœ€è¦ä½¿ç”¨JenkinsæœåŠ¡è¿›è¡ŒåŠ å¯†
+								ä½¿ç”¨ç½‘å€ï¼šhttp://localhost:8080/script
+								åœ¨é¡µé¢ä¸Šè¿è¡Œè„šæœ¬ï¼šprintln(hudson.util.Secret.fromString("<password>").getEncryptedValue())
+								å°†å¾—åˆ°åŠ å¯†åçš„å­—ç¬¦ä¸²å¤åˆ¶è¿‡æ¥
 								*/
 								encryptedPassphrase: '{AQAAABAAAAAQg89pYdWmosLKQB8fDD1AtVInajYeiKRWNeXwuF7F+xU=}',
 								key: '', 
@@ -120,29 +120,29 @@ pipeline{
 							], 
 							transfers: [
 								sshTransfer(
-									//±¾µØĞèÒªÉÏ´«µÄÎÄ¼ş
+									//æœ¬åœ°éœ€è¦ä¸Šä¼ çš„æ–‡ä»¶
 									sourceFiles: 'thirteen-gateway/sftp/*.jar',
-									//È¥³ıÇ°×º
+									//å»é™¤å‰ç¼€
 									removePrefix: 'thirteen-gateway/sftp',
-									//ĞèÒªÉÏ´«Ô¶³Ì·şÎñÆ÷µÄÏà¶ÔÄ¿Â¼µØÖ·
+									//éœ€è¦ä¸Šä¼ è¿œç¨‹æœåŠ¡å™¨çš„ç›¸å¯¹ç›®å½•åœ°å€
 									remoteDirectory: '/usr/local/soft/jenkins/thirteen-gateway/sftp',
-									//²¿Êğ³¬Ê±Éè¶¨
+									//éƒ¨ç½²è¶…æ—¶è®¾å®š
 									execTimeout: 600000, 
 									cleanRemote: false, 
 									excludes: '', 
-									//Ö´ĞĞÃüÁî
+									//æ‰§è¡Œå‘½ä»¤
 									execCommand: '''
-										# ÉèÖÃĞèÒª²¿ÊğµÄÎÄ¼şÃû£¬¿ÉÒÔÊ¹ÓÃÍ¨Åä·û²¿Êğ¶à¸öjar°ü
+										# è®¾ç½®éœ€è¦éƒ¨ç½²çš„æ–‡ä»¶åï¼Œå¯ä»¥ä½¿ç”¨é€šé…ç¬¦éƒ¨ç½²å¤šä¸ªjaråŒ…
 										searchname=\'thirteen-gateway.jar\'
-										# ·şÎñÆ÷Ô­Ê¼ÎÄ¼şÄ¿Â¼
+										# æœåŠ¡å™¨åŸå§‹æ–‡ä»¶ç›®å½•
 										sourcepath=\'/usr/local/soft/jenkins/thirteen-gateway/sftp\'
-										# ·şÎñÆ÷×îÖÕ²¿ÊğÄ¿Â¼
+										# æœåŠ¡å™¨æœ€ç»ˆéƒ¨ç½²ç›®å½•
 										targetpath=\'/usr/local/soft/jenkins/thirteen-gateway/target\'
-										# ·şÎñÆ÷±¸·İÄ¿Â¼
+										# æœåŠ¡å™¨å¤‡ä»½ç›®å½•
 										backuppath=\'/usr/local/soft/jenkins/thirteen-gateway/backup\'
-										# jdkÄ¿Â¼
+										# jdkç›®å½•
 										javapath=\'/usr/local/soft/jdk-13//bin\'
-										# java±àÒë²ÎÊı
+										# javaç¼–è¯‘å‚æ•°
 										javaoptions=\'-Xmx64M -Xms8M\'
 										jpscmd="$javapath/jps"
 										javacmd="$javapath/java"
