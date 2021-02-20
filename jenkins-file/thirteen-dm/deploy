@@ -76,7 +76,6 @@ pipeline{
 					)
 				{
 					sh '''
-						cd thirteen-datamation
 						mvn clean package -pl thirteen-datamation -am -Dmaven.test.skip=true -P prod
 					'''
 				}
