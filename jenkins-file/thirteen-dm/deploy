@@ -97,7 +97,7 @@ pipeline{
 					cd thirteen-datamation
 					mkdir -p sftp
 					rm -rf sftp/*
-					mv thirteen-datamation/target/*.jar sftp
+					mv target/*.jar sftp
 				'''
 				/*
 				2.使用Publisher to SSH插件部署文件并在远程服务器上运行脚本
