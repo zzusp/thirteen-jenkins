@@ -76,8 +76,8 @@ pipeline{
 					)
 				{
 					sh '''
-						cd thirteen-authorization
-						mvn clean package -pl thirteen-authorization-starter -am -Dmaven.test.skip=true -P prod
+						cd thirteen-datamation
+						mvn clean package -pl thirteen-datamation -am -Dmaven.test.skip=true -P prod
 					'''
 				}
             }
